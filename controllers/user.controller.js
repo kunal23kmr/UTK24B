@@ -15,6 +15,7 @@ const cookieOptions = {
   // secure: process.env.NODE_ENV === 'production' ? true : false,
   maxAge: 5 * 24 * 60 * 60 * 1000,
   httpOnly: true,
+  sameSite: 'None',
 };
 
 
