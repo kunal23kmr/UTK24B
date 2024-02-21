@@ -26,6 +26,9 @@ const courseSchema = new Schema(
     date: {
       type: String,
     },
+    day: {
+      type: String,
+    },
     minparticipant: {
       type: Number,
       default:1
