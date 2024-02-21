@@ -189,12 +189,12 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   if (!event) {
     return next(new AppError('Invalid event id or event not found.', 400));
   }
-
+   const collegeName=college;
   console.log(event);
 
   event.participant.push({
     enrolledby,
-    collegeName:college,
+    collegeName,
     teamName,
     participants
   });
