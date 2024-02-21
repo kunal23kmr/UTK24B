@@ -194,7 +194,7 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
   event.participant.push({
     enrolledby,
-    college,
+    collegeName:college,
     teamName,
     participants
   });
