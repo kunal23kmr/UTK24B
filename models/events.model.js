@@ -116,7 +116,7 @@ const courseSchema = new Schema(
 
     numberOfParticipants: {
       type: Number,
-      default: 5,
+      default: 0,
     },
     createdBy: {
       type: String,
