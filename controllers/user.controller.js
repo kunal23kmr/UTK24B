@@ -25,7 +25,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
   if (!fullName || !email || !password || !phone) {
     return next(new AppError('All fields are required', 408));
   }
-  const userExists = await User.findOne({ email });
+  var userExists = await User.findOne({ email });
 
   if (userExists) {
 
@@ -42,7 +42,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     }
 
   } else {
-    const userExists = await User.create({
+    userExists = await User.create({
       fullName,
       email,
       password,
@@ -70,7 +70,9 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     await sendEmail(email, subject, message);
 
     // If email sent successfully send the success response
-    res.status(200).json({
+    await userExists.save();
+
+    return res.status(200).json({
       success: true,
       message: `Verification Link has been sent to ${email} successfully`,
     });
@@ -88,14 +90,6 @@ export const registerUser = asyncHandler(async (req, res, next) => {
       )
     );
   }
-
-  await userExists.save();
-
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully',
-    userExists,
-  });
 });
 
 
