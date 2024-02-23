@@ -23,6 +23,7 @@ const userSchema = new Schema(
         'Please fill in a valid email address',
       ], // Matches email against regex
     },
+    phone:Number,
     password: {
       type: String,
       required: [true, 'Password is required'],

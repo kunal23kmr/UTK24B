@@ -20,9 +20,9 @@ const cookieOptions = {
 
 
 export const registerUser = asyncHandler(async (req, res, next) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, phone } = req.body;
 
-  if (!fullName || !email || !password) {
+  if (!fullName || !email || !password || !phone) {
     return next(new AppError('All fields are required', 408));
   }
   const userExists = await User.findOne({ email });
@@ -46,7 +46,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
       fullName,
       email,
       password,
-
+      phone,
     });
     if (!userExists) {
       return next(
@@ -58,7 +58,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 
 
   const signupToken = await userExists.generateSignupToken();
-  console.log("signupToken",signupToken);
+  console.log("signupToken", signupToken);
   await userExists.save();
 
   const verificationUrl = `${process.env.FRONTEND_URL}/verify/${signupToken}`;
