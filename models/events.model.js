@@ -79,6 +79,11 @@ const courseSchema = new Schema(
           default: false,
 
         },
+        paymentReferenceNumber:{
+          type: String,
+          required:[true,"Please Enter Payment Reference No.."]
+
+        }
 
 
       },
