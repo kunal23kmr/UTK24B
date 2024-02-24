@@ -5,7 +5,7 @@ import Merchandise from '../models/merchandise.model.js';
 
 
 export const registerTshirt = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
+    // //console.log(req.body);
 
     const {
         nameOnCloth,
@@ -40,7 +40,7 @@ export const registerTshirt = asyncHandler(async (req, res, next) => {
         }
         const user = await User.findById(req.user.id);
         user.registeredOrders.push(order._id);
-        // console.log(order);
+        // //console.log(order);
         await user.save();
         return res.status(201).json({
             success: true,
@@ -49,7 +49,7 @@ export const registerTshirt = asyncHandler(async (req, res, next) => {
         });
 
     } catch (err) {
-        // console.log(err);
+        // //console.log(err);
         res.status(500).json({ success: false, message: 'Server error.' })
     }
 
@@ -91,14 +91,14 @@ export const getVerifiedPaymentList = asyncHandler(async (req, res, next) => {
 
 export const changeOrderVerificationStatus = asyncHandler(async (req, res, next) => {
     const { orderId, status } = req.body;
-    // console.log(req.body);
+    // //console.log(req.body);
 
     const updatedOrder = await Merchandise.findByIdAndUpdate(orderId, { paymentVerified: status }, { new: true });
 
     if (!updatedOrder) {
         return next(new AppError('Order not found.', 404));
     }
-    console.log(updatedOrder);
+    //console.log(updatedOrder);
     res.status(200).json({
         success: true,
         message: 'Payment Status successfully updated.',

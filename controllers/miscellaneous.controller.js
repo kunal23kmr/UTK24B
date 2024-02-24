@@ -7,7 +7,7 @@ import Contact from '../models/contactUs.model.js';
 
 export const contactUs = asyncHandler(async (req, res, next) => {
   const { name, email, message, subject } = req.body;
-  console.log(name, email, message, subject);
+  //console.log(name, email, message, subject);
   if (!name || !email || !message) {
     return next(new AppError('Name, Email, Message are required'));
   }
@@ -22,7 +22,7 @@ export const contactUs = asyncHandler(async (req, res, next) => {
     }
     await sendEmail(process.env.CONTACT_US_EMAIL, 'Contact Us Form - Utkansh-24\n' + subject, textMessage);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return next(new AppError(error.message, 400));
   }
 
@@ -38,13 +38,13 @@ export const getContactUs = asyncHandler(async (req, res, next) => {
 });
 
 export const replyQuery = asyncHandler(async (req, res, next) => {
-  // console.log(req.body);
+  // //console.log(req.body);
   const { queryId, replyMessage } = req.body;
 
   const query = await Contact.findOne({ _id: queryId });
 
   if (!query) {
-    console.log('No query found');
+    //console.log('No query found');
     return res.status(404).json({ success: false, message: 'Query not found' });
   }
 

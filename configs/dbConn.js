@@ -16,10 +16,10 @@ const connectToDB = async () => {
     );
 
     if (connection) {
-      console.log(`Connected to MongoDB: ${connection.host}`);
+      //console.log(`Connected to MongoDB: ${connection.host}`);
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     process.exit(1);
   }
 };

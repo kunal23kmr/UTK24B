@@ -58,7 +58,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 
 
   const signupToken = await userExists.generateSignupToken();
-  console.log("signupToken", signupToken);
+  //console.log("signupToken", signupToken);
   await userExists.save();
 
   const verificationUrl = `${process.env.FRONTEND_URL}/verify/${signupToken}`;
@@ -117,7 +117,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     const token = await user.generateJWTToken();
 
     user.password = undefined;
-    // console.log(token);
+    // //console.log(token);
 
     await res.cookie('token', token, cookieOptions);
 
@@ -127,7 +127,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
       user,
     });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     return next(new AppError('Error:' + err, 404));
   }
 
@@ -156,9 +156,9 @@ export const logoutUser = asyncHandler(async (_req, res, _next) => {
  */
 export const getLoggedInUserDetails = asyncHandler(async (req, res, _next) => {
   // Finding the user using the id from modified req object
-  console.log(req.user);
+  //console.log(req.user);
   const user = await User.findById(req.user.id);
-  // console.log("hi");
+  // //console.log("hi");
   res.status(200).json({
     success: true,
     message: 'User details',
@@ -201,7 +201,7 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
   // We here need to send an email to the user with the token
   const subject = 'Reset Password';
   const message = `You can reset your password by clicking <a href=${resetPasswordUrl} target="_blank">Reset your password</a>\nIf the above link does not work for some reason then copy paste this link in new tab ${resetPasswordUrl}.\n If you have not requested this, kindly ignore.`;
-  // console.log(resetPasswordUrl);
+  // //console.log(resetPasswordUrl);
   // res.status(200).json({
   //       success: true,
   //       message: `Reset password token has been sent to ${email} successfully`,
@@ -251,7 +251,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new AppError('Password is required', 400));
   }
 
-  console.log(forgotPasswordToken);
+  //console.log(forgotPasswordToken);
 
   const user = await User.findOne({
     forgotPasswordToken,
@@ -287,7 +287,7 @@ export const verifyAccount = asyncHandler(async (req, res, next) => {
     .digest('hex');
 
 
-  console.log(signupToken);
+  //console.log(signupToken);
 
   const user = await User.findOne({
     signupToken,
