@@ -51,10 +51,9 @@ export const replyQuery = asyncHandler(async (req, res, next) => {
   if (replyMessage) {
     query.replyMessage = `${replyMessage}`;
 
-    const truncatedMessage = query.replyMessage.slice(0, Math.min(30, query.replyMessage.length));
+    const truncatedMessage = query.subject.slice(0, Math.min(30, query.subject.length));
 
-    await sendEmail(process.env.CONTACT_US_EMAIL, query.email,
-      `Answer to your query: ${truncatedMessage}...`);
+    await sendEmail(query.email, `Answer to your query: ${truncatedMessage}...`,replyMessage);
   }
 
   query.answered = true;
@@ -64,7 +63,7 @@ export const replyQuery = asyncHandler(async (req, res, next) => {
 });
 
 export const rejectionMail = asyncHandler(async (req, res, next) => {
-  const { email,subject ,message } = req.body;
+  const { email, subject, message } = req.body;
   await sendEmail(email, subject, message);
   res.status(200).json({
     success: true,

@@ -33,7 +33,7 @@ const sendEmail = async function (email, subject, message) {
 
   // send mail with defined transport object
   await transporter.sendMail({
-    from: process.env.SENDER_EMAIL, // sender address
+    from: 'Utkansh support team', // sender address
     to: email, // user email
     subject: subject, // Subject line
     html: message, // html body
