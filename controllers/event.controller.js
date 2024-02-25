@@ -250,7 +250,7 @@ export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
 
 
 export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
-  const { userid } = req.body;
+  const { userid,phoneno,emailid } = req.body;
 
 
   const { id } = req.params;
@@ -269,7 +269,7 @@ export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
 
 
   event.clubcoordinator.push({
-    userid,
+    userid,phoneno,emailid
   });
 
   await event.save();
