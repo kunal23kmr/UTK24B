@@ -171,13 +171,10 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
 
 
 export const addParticipantToEventById = asyncHandler(async (req, res, next) => {
-  const { college, teamName, participants, paymentReferenceNumber, amount } = req.body;
+  const { college, teamName, participants, paymentReferenceNumber,amount } = req.body;
   const userid = req.user;
   const enrolledby = userid.id;
-
-  const email=userid.email;
-  console.log(" const userid = req.user;", userid);
-
+  const email = userid.email;
   const { id } = req.params;
 
   if (!college || !teamName || !participants) {
@@ -186,7 +183,6 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
   const event = await Event.findById(id);
   const eventname = event.title;
-
   if (!event) {
     return next(new AppError('Invalid event id or event not found.', 400));
   }
@@ -208,7 +204,6 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
     });
 
     event.numberOfParticipants = event.participant.length;
-
 
     await event.save();
 
