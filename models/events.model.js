@@ -79,6 +79,11 @@ const courseSchema = new Schema(
           default: false,
 
         },
+        paymentReferenceNumber:{
+          type: String,
+          required:[true,"Please Enter Payment Reference No.."]
+
+        }
 
 
       },
@@ -98,7 +103,17 @@ const courseSchema = new Schema(
       {
         userid: {
           type: String,
-          default: "clubabhi"
+          default: "Dummy User"
+
+        },
+        emailid: {
+          type: String,
+          default: "dummy@gmail.com"
+
+        },
+        phoneno: {
+          type: String,
+          default: "1234567890"
 
         },
       }

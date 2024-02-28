@@ -171,7 +171,7 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
 
 
 export const addParticipantToEventById = asyncHandler(async (req, res, next) => {
-  const { college, teamName, participants } = req.body;
+  const { college, teamName, participants,paymentReferenceNumber } = req.body;
   const userid = req.user;
   const enrolledby = userid.id;
   //console.log(" const userid = req.user;", userid);
@@ -190,13 +190,14 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
     return next(new AppError('Invalid event id or event not found.', 400));
   }
    const collegeName=college;
-  //console.log(event);
+
 
   event.participant.push({
     enrolledby,
     collegeName,
     teamName,
-    participants
+    participants,
+    paymentReferenceNumber,
   });
 
   event.numberOfParticipants = event.participant.length;
@@ -249,7 +250,7 @@ export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
 
 
 export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
-  const { userid } = req.body;
+  const { userid,phoneno,emailid } = req.body;
 
 
   const { id } = req.params;
@@ -268,7 +269,7 @@ export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
 
 
   event.clubcoordinator.push({
-    userid,
+    userid,phoneno,emailid
   });
 
   await event.save();
@@ -393,7 +394,7 @@ export const removeParticipantsFromEvent = asyncHandler(async (req, res, next) =
     event.participant.splice(lectureIndex, 1);
 
 
-    event.numberOfLectures = event.participant.length;
+    event.numberOfParticipants = event.participant.length;
 
 
     await event.save();
