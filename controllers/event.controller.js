@@ -175,8 +175,12 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   const userid = req.user;
   const enrolledby = userid.id;
 
-  const email=userid.email;
-  console.log(" const userid = req.user;", userid);
+  const user = await User.findById(userid);
+
+  if (!user) {
+    return next(new AppError('User not exist', 404));
+  }
+  // console.log(" const userid = req.user;", userid);
 
   const { id } = req.params;
 
@@ -214,15 +218,15 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
     const subject = `Regarding Provisional Registration in event ${eventname} `;
     const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment`;
-    await sendEmail(email, subject, message);
+    await sendEmail(user.email, subject, message);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Registered successfully.',
       event,
     });
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: 'You can register only once.',
       event,
