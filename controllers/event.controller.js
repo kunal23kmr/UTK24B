@@ -187,32 +187,40 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
     return next(new AppError('Invalid event id or event not found.', 400));
   }
   const collegeName = college;
-
+  var f = false;
   event.participant.some(obj => {
     if (obj.enrolledby === enrolledby) {
-      return next(new AppError('You can only participate once.', 401));
+      f = true;
     }
   })
+  if (!f) {
+    event.participant.push({
+      enrolledby,
+      collegeName,
+      teamName,
+      amount,
+      participants,
+      paymentReferenceNumber,
+    });
 
-  event.participant.push({
-    enrolledby,
-    collegeName,
-    teamName,
-    amount,
-    participants,
-    paymentReferenceNumber,
-  });
-
-  event.numberOfParticipants = event.participant.length;
+    event.numberOfParticipants = event.participant.length;
 
 
-  await event.save();
+    await event.save();
 
-  res.status(200).json({
-    success: true,
-    message: 'Participant added successfully',
-    event,
-  });
+    res.status(200).json({
+      success: true,
+      message: 'Registered successfully.',
+      event,
+    });
+  } else {
+    res.status(401).json({
+      success: false,
+      message: 'You can register only once.',
+      event,
+    });
+  }
+
 });
 
 export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
