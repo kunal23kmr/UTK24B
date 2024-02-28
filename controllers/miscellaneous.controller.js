@@ -20,7 +20,8 @@ export const contactUs = asyncHandler(async (req, res, next) => {
     if (!contact) {
       return next(new AppError('Server error', 505));
     }
-    await sendEmail(process.env.CONTACT_US_EMAIL, 'Contact Us Form - Utkansh-24\n' + subject, textMessage);
+    var cc = 'utkansh@nitj.ac.in';
+    await sendEmail(process.env.CONTACT_US_EMAIL, 'Contact Us Form - Utkansh-24\n' + subject, textMessage,cc);
   } catch (error) {
     //console.log(error);
     return next(new AppError(error.message, 400));
