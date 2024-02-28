@@ -31,17 +31,17 @@ const courseSchema = new Schema(
     },
     minparticipant: {
       type: Number,
-      default:1
-      
+      default: 1
+
     },
     maxparticipant: {
       type: Number,
-      
-    },
-    
-    
 
-   
+    },
+
+
+
+
 
     participant: [
       {
@@ -60,14 +60,19 @@ const courseSchema = new Schema(
           default: "participantstcaabhi"
 
         },
+        amount: {
+          type: Number,
+          default: 0,
+          
+        },
         participants: [{
           participantPhone: {
             type: String,
           },
-          participantEmail:{
+          participantEmail: {
             type: String,
           },
-          participantName:{
+          participantName: {
             type: String,
           }
 
@@ -79,9 +84,9 @@ const courseSchema = new Schema(
           default: false,
 
         },
-        paymentReferenceNumber:{
+        paymentReferenceNumber: {
           type: String,
-          required:[true,"Please Enter Payment Reference No.."]
+          required: [true, "Please Enter Payment Reference No.."]
 
         }
 

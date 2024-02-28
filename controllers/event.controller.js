@@ -12,13 +12,13 @@ export const getAllEvents = asyncHandler(async (req, res, next) => {
   const userid = req.user;
   if (userid.role == 'USER') {
     try {
-      console.log("userid.id",userid.id);
+      //console.log("userid.id",userid.id);
       const events = await Event.find({
         'participant': {
           $elemMatch: { enrolledby: userid.id }
         }
       });
-        console.log("events",events);
+      //console.log("events",events);
       res.status(200).json({
         success: true,
         message: 'All Events',
@@ -56,7 +56,7 @@ export const getAllEvents = asyncHandler(async (req, res, next) => {
 
 export const createEvent = asyncHandler(async (req, res, next) => {
   const { title, description, club, createdBy, venue, time, date, minparticipant, maxparticipant, day } = req.body;
-  console.log("req-body data", req.body);
+  //console.log("req-body data", req.body);
 
   if (!title || !description || !club || !createdBy || !venue || !time || !date || !minparticipant || !maxparticipant || !day) {
     return next(new AppError('All fields are required', 400));
@@ -90,8 +90,8 @@ export const getParticipantsByEventId = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { verified } = req.query;
   const userid = req.user;
-  // console.log("userid");
-  // console.log(userid);
+  // //console.log("userid");
+  // //console.log(userid);
 
   try {
     const event = await Event.findById(id);
@@ -109,7 +109,7 @@ export const getParticipantsByEventId = asyncHandler(async (req, res, next) => {
     } else {
       participating = event.participant;
     }
-    // console.log(participating);
+    // //console.log(participating);
     res.status(200).json({
       success: true,
       message: 'Events participants fetched successfully',
@@ -137,9 +137,9 @@ export const gettcacordinatorByEventId = asyncHandler(async (req, res, next) => 
 });
 export const getfacultycordinatorByEventId = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-   console.log("id-ff",id)
+  //console.log("id-ff",id)
   const event = await Event.findById(id);
-  console.log("event",event)
+  //console.log("event",event)
   if (!event) {
     return next(new AppError('Invalid Course id or Course not found.', 408));
   }
@@ -152,17 +152,17 @@ export const getfacultycordinatorByEventId = asyncHandler(async (req, res, next)
 });
 export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-   console.log("id-ff",id)
+  //console.log("id-ff",id)
   const event = await Event.findById(id);
- 
+
   if (!event) {
     return next(new AppError('Invalid Course id or Course not found.', 408));
   }
-  // console.log("event",event.clubcoordinator),
+  // //console.log("event",event.clubcoordinator),
   res.status(200).json({
     success: true,
     message: 'Course participants fetched successfully',
-    
+
     clubcoordinator: event.clubcoordinator,
   });
 });
@@ -171,15 +171,14 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
 
 
 export const addParticipantToEventById = asyncHandler(async (req, res, next) => {
-  const { college, teamName, participants,paymentReferenceNumber } = req.body;
+  const { college, teamName, participants, paymentReferenceNumber, amount } = req.body;
   const userid = req.user;
   const enrolledby = userid.id;
+
   const email=userid.email;
   console.log(" const userid = req.user;", userid);
+
   const { id } = req.params;
-  console.log("req.body", req.body);
-  console.log("college", college); console.log("teamName", teamName); console.log("participants", participants);
-  let lectureData = {};
 
   if (!college || !teamName || !participants) {
     return next(new AppError('college,teamName and participants are required', 400));
@@ -191,21 +190,40 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   if (!event) {
     return next(new AppError('Invalid event id or event not found.', 400));
   }
-   const collegeName=college;
-  console.log("paymentReferenceNumber",paymentReferenceNumber);
+  const collegeName = college;
+  var f = false;
+  event.participant.some(obj => {
+    if (obj.enrolledby === enrolledby) {
+      f = true;
+    }
+  })
+  if (!f) {
+    event.participant.push({
+      enrolledby,
+      collegeName,
+      teamName,
+      amount,
+      participants,
+      paymentReferenceNumber,
+    });
 
-  event.participant.push({
-    enrolledby,
-    collegeName,
-    teamName,
-    participants,
-    paymentReferenceNumber,
-  });
-
-  event.numberOfParticipants = event.participant.length;
+    event.numberOfParticipants = event.participant.length;
 
 
-  await event.save();
+    await event.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Registered successfully.',
+      event,
+    });
+  } else {
+    res.status(401).json({
+      success: false,
+      message: 'You can register only once.',
+      event,
+    });
+  }
 
 
   const subject = `Regarding Provisional Registration in event ${eventname} `;
@@ -219,11 +237,12 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
     message: 'Participant added successfully',
     event,
   });
+
 });
 
 export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
   const { userid } = req.body;
-  console.log("yes");
+  //console.log("yes");
 
 
   const { id } = req.params;
@@ -259,7 +278,7 @@ export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
 
 
 export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
-  const { userid,phoneno,emailid } = req.body;
+  const { userid, phoneno, emailid } = req.body;
 
 
   const { id } = req.params;
@@ -278,7 +297,7 @@ export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
 
 
   event.clubcoordinator.push({
-    userid,phoneno,emailid
+    userid, phoneno, emailid
   });
 
   await event.save();
@@ -363,7 +382,7 @@ export const removeParticipantsFromEvent = asyncHandler(async (req, res, next) =
 
   const { courseId, lectureId } = req.query;
 
-  console.log(courseId);
+  //console.log(courseId);
 
   if (!courseId) {
     return next(new AppError('Event ID is required', 400));
@@ -459,8 +478,8 @@ export const updateParticipantVerification = asyncHandler(async (req, res, next)
   const { courseId, lectureId } = req.query;
   const { subjects, messages, isverified } = req.body;
 
-  console.log(isverified);
-  // console.log("subject-", subjects, "--messages", messages);
+  //console.log(isverified);
+  // //console.log("subject-", subjects, "--messages", messages);
 
   if (!courseId) {
     return next(new AppError('Course ID is required', 400));
@@ -502,7 +521,7 @@ export const updateParticipantVerification = asyncHandler(async (req, res, next)
     if (!isverified) {
       const subject = subjects;
       const message = messages;
-      console.log("email-", email);
+      //console.log("email-", email);
       await sendEmail(email, subject, message);
     }
 
@@ -513,7 +532,7 @@ export const updateParticipantVerification = asyncHandler(async (req, res, next)
   } catch (error) {
     res.status(400).json({
       success: false,
-      message:error.message,
+      message: error.message,
     });
   }
 });

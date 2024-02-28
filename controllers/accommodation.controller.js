@@ -5,7 +5,7 @@ import Accommodation from '../models/accommodation.model.js';
 
 
 export const registerAccommodation = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
+    // //console.log(req.body);
     const {
         // teamName,
         // registrantId,
@@ -18,7 +18,7 @@ export const registerAccommodation = asyncHandler(async (req, res, next) => {
         totalNumberOfDiet,
         accommodationType
     } = req.body;
-    console.log(req.user.id);
+    //console.log(req.user.id);
     const registrantId = req.user.id;
     const user = await User.findById(registrantId);
     if (!user) {
@@ -120,7 +120,7 @@ export const deleteRequest = asyncHandler(async (req, res, next) => {
             message: 'Deleted successfully',
         })
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return next(new AppError('Server error', 501));
     }
     
@@ -149,7 +149,7 @@ export const getAllRoomList = asyncHandler(async (req, res, next) => {
 
 // //get list of your bookings;
 // export const getMyBookingList = asyncHandler(async (req, res, next) => {
-//     // console.log(req.user.id)
+//     // //console.log(req.user.id)
 //     const user = await User.findById(req.user.id).populate('registeredOrders', 'nameOnCloth clothId quantity sizeOfCloth hostelName rollNumber phoneNumber paymentVerified paymentReferenceNumber')
 //     if (!user) {
 //         return next(new AppError('User not found', 404));
