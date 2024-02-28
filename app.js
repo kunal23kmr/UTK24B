@@ -7,11 +7,8 @@ import errorMiddleware from './middlewares/error.middleware.js';
 
 const app = express();
 
-// Middlewares
-// Built-In
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// Third-Party
 app.use((req, res, next) => {
 
   res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
