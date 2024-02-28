@@ -18,7 +18,7 @@ export const getAllEvents = asyncHandler(async (req, res, next) => {
           $elemMatch: { enrolledby: userid.id }
         }
       });
-        //console.log("events",events);
+      //console.log("events",events);
       res.status(200).json({
         success: true,
         message: 'All Events',
@@ -137,7 +137,7 @@ export const gettcacordinatorByEventId = asyncHandler(async (req, res, next) => 
 });
 export const getfacultycordinatorByEventId = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-   //console.log("id-ff",id)
+  //console.log("id-ff",id)
   const event = await Event.findById(id);
   //console.log("event",event)
   if (!event) {
@@ -152,9 +152,9 @@ export const getfacultycordinatorByEventId = asyncHandler(async (req, res, next)
 });
 export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-   //console.log("id-ff",id)
+  //console.log("id-ff",id)
   const event = await Event.findById(id);
- 
+
   if (!event) {
     return next(new AppError('Invalid Course id or Course not found.', 408));
   }
@@ -162,7 +162,7 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
   res.status(200).json({
     success: true,
     message: 'Course participants fetched successfully',
-    
+
     clubcoordinator: event.clubcoordinator,
   });
 });
@@ -171,14 +171,11 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
 
 
 export const addParticipantToEventById = asyncHandler(async (req, res, next) => {
-  const { college, teamName, participants,paymentReferenceNumber } = req.body;
+  const { college, teamName, participants, paymentReferenceNumber, amount } = req.body;
   const userid = req.user;
   const enrolledby = userid.id;
   //console.log(" const userid = req.user;", userid);
   const { id } = req.params;
-  //console.log("req.body", req.body);
-  //console.log("college", college); //console.log("teamName", teamName); //console.log("participants", participants);
-  let lectureData = {};
 
   if (!college || !teamName || !participants) {
     return next(new AppError('college,teamName and participants are required', 400));
@@ -189,13 +186,19 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   if (!event) {
     return next(new AppError('Invalid event id or event not found.', 400));
   }
-   const collegeName=college;
+  const collegeName = college;
 
+  event.participant.some(obj => {
+    if (obj.enrolledby === enrolledby) {
+      return next(new AppError('You can only participate once.', 401));
+    }
+  })
 
   event.participant.push({
     enrolledby,
     collegeName,
     teamName,
+    amount,
     participants,
     paymentReferenceNumber,
   });
@@ -250,7 +253,7 @@ export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
 
 
 export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
-  const { userid,phoneno,emailid } = req.body;
+  const { userid, phoneno, emailid } = req.body;
 
 
   const { id } = req.params;
@@ -269,7 +272,7 @@ export const addclubcoordinatorById = asyncHandler(async (req, res, next) => {
 
 
   event.clubcoordinator.push({
-    userid,phoneno,emailid
+    userid, phoneno, emailid
   });
 
   await event.save();
@@ -504,7 +507,7 @@ export const updateParticipantVerification = asyncHandler(async (req, res, next)
   } catch (error) {
     res.status(400).json({
       success: false,
-      message:error.message,
+      message: error.message,
     });
   }
 });
