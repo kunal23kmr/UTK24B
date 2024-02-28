@@ -174,6 +174,7 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   const { college, teamName, participants,paymentReferenceNumber } = req.body;
   const userid = req.user;
   const enrolledby = userid.id;
+  const email=userid.email;
   console.log(" const userid = req.user;", userid);
   const { id } = req.params;
   console.log("req.body", req.body);
@@ -185,6 +186,7 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   }
 
   const event = await Event.findById(id);
+  const eventname = event.title;
 
   if (!event) {
     return next(new AppError('Invalid event id or event not found.', 400));
@@ -205,6 +207,13 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
   await event.save();
 
+
+  const subject = `Regarding Provisional Registration in event ${eventname} `;
+  const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment` ;
+  await sendEmail(email, subject, message);
+
+
+  
   res.status(200).json({
     success: true,
     message: 'Participant added successfully',
