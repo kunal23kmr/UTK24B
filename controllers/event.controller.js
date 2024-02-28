@@ -171,13 +171,10 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
 
 
 export const addParticipantToEventById = asyncHandler(async (req, res, next) => {
-  const { college, teamName, participants, paymentReferenceNumber, amount } = req.body;
+  const { college, teamName, participants, paymentReferenceNumber,amount } = req.body;
   const userid = req.user;
   const enrolledby = userid.id;
-
-  const email=userid.email;
-  console.log(" const userid = req.user;", userid);
-
+  const email = userid.email;
   const { id } = req.params;
 
   if (!college || !teamName || !participants) {
@@ -186,7 +183,6 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
   const event = await Event.findById(id);
   const eventname = event.title;
-
   if (!event) {
     return next(new AppError('Invalid event id or event not found.', 400));
   }
@@ -209,8 +205,11 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
     event.numberOfParticipants = event.participant.length;
 
-
     await event.save();
+
+    const subject = `Regarding Provisional Registration in event ${eventname} `;
+    const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment`;
+    await sendEmail(email, subject, message);
 
     res.status(200).json({
       success: true,
@@ -226,17 +225,6 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
   }
 
 
-  const subject = `Regarding Provisional Registration in event ${eventname} `;
-  const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment` ;
-  await sendEmail(email, subject, message);
-
-
-  
-  res.status(200).json({
-    success: true,
-    message: 'Participant added successfully',
-    event,
-  });
 
 });
 
