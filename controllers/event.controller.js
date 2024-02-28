@@ -212,6 +212,10 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
 
     await event.save();
 
+    const subject = `Regarding Provisional Registration in event ${eventname} `;
+    const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment`;
+    await sendEmail(email, subject, message);
+
     res.status(200).json({
       success: true,
       message: 'Registered successfully.',
@@ -224,20 +228,6 @@ export const addParticipantToEventById = asyncHandler(async (req, res, next) => 
       event,
     });
   }
-
-
-  const subject = `Regarding Provisional Registration in event ${eventname} `;
-  const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment` ;
-  await sendEmail(email, subject, message);
-
-
-  
-  res.status(200).json({
-    success: true,
-    message: 'Participant added successfully',
-    event,
-  });
-
 });
 
 export const addtcacoordinatorById = asyncHandler(async (req, res, next) => {
