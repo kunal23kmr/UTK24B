@@ -171,64 +171,69 @@ export const getclubcordinatorByEventId = asyncHandler(async (req, res, next) =>
 
 
 export const addParticipantToEventById = asyncHandler(async (req, res, next) => {
-  const { college, teamName, participants, paymentReferenceNumber,amount } = req.body;
-  const userid = req.user;
-  const enrolledby = userid.id;
+  try {
+    const { college, teamName, participants, paymentReferenceNumber, amount } = req.body;
+    const userid = req.user;
+    const enrolledby = userid.id;
 
-  const user = await User.findById(userid);
+    const user = await User.findById(userid.id);
 
-  if (!user) {
-    return next(new AppError('User not exist', 404));
-  }
-  // console.log(" const userid = req.user;", userid);
-
-  const { id } = req.params;
-
-  if (!college || !teamName || !participants) {
-    return next(new AppError('college,teamName and participants are required', 400));
-  }
-
-  const event = await Event.findById(id);
-  const eventname = event.title;
-  if (!event) {
-    return next(new AppError('Invalid event id or event not found.', 400));
-  }
-  const collegeName = college;
-  var f = false;
-  event.participant.some(obj => {
-    if (obj.enrolledby === enrolledby) {
-      f = true;
+    if (!user) {
+      return next(new AppError('User not exist', 404));
     }
-  })
-  if (!f) {
-    event.participant.push({
-      enrolledby,
-      collegeName,
-      teamName,
-      amount,
-      participants,
-      paymentReferenceNumber,
-    });
+    // console.log(" const userid = req.user;", userid);
 
-    event.numberOfParticipants = event.participant.length;
+    const { id } = req.params;
 
-    await event.save();
+    if (!college || !teamName || !participants) {
+      return next(new AppError('college,teamName and participants are required', 400));
+    }
 
-    const subject = `Regarding Provisional Registration in event ${eventname} `;
-    const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment`;
-    await sendEmail(user.email, subject, message);
+    const event = await Event.findById(id);
+    const eventname = event.title;
+    if (!event) {
+      return next(new AppError('Invalid event id or event not found.', 400));
+    }
+    const collegeName = college;
+    var f = false;
+    event.participant.some(obj => {
+      if (obj.enrolledby === enrolledby) {
+        f = true;
+      }
+    })
+    if (!f) {
+      event.participant.push({
+        enrolledby,
+        collegeName,
+        teamName,
+        amount,
+        participants,
+        paymentReferenceNumber,
+      });
 
-    return res.status(200).json({
-      success: true,
-      message: 'Registered successfully.',
-      event,
-    });
-  } else {
-    return res.status(401).json({
-      success: false,
-      message: 'You can register only once.',
-      event,
-    });
+      event.numberOfParticipants = event.participant.length;
+
+      await event.save();
+
+      const subject = `Regarding Provisional Registration in event ${eventname} `;
+      const message = `You have been provisionally registered for the event ${eventname}.Kindly login to dashboard for making payment.<br></br> <br></br>  <b>Note:<b> Registration will be considered successfull only after payment`;
+      await sendEmail(user.email, subject, message);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Registered successfully.',
+        event,
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: 'You can register only once.',
+        event,
+      }); participantEmail
+    }
+  } catch (err) {
+    console.log(err);
+    return next(new AppError('Internal server error', 505));
   }
 });
 
