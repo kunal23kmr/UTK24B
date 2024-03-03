@@ -101,6 +101,9 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     }
 
     const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      return next(new AppError('User Not found.', 404));
+    }
     if (!user.signupverified) {
       return next(
         new AppError('Account Not Verified Please Verify', 401)
